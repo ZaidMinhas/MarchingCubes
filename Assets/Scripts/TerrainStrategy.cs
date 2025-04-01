@@ -12,6 +12,7 @@ public class PerlinNoiseStrategy : TerrainStrategy
 {
     private float height;
     private float val;
+    
     public PerlinNoiseStrategy(float height =  8)
     {
         val = Random.value*100;
@@ -19,12 +20,13 @@ public class PerlinNoiseStrategy : TerrainStrategy
     }
     public float generate(float x, float y, float z)
     { 
-        return y - height * Mathf.PerlinNoise(x/8f + val, z/8f + val);
+        return y - height * Mathf.PerlinNoise( (x + val)/8f, (z + val)/8f);
     }
 
     public void init()
     {
-        val = Random.value*100;
+        
+        //val = Random.value*100;
     }
 }
 

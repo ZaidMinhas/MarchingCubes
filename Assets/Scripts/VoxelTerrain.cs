@@ -4,24 +4,22 @@ public class VoxelTerrain
 {
     float[,,] terrain;
     
+    public Chunk chunk;
     private float terrainSurface;
-    private int width;
-    private int height;
-    public TerrainStrategy terrainStrategy;
+    private readonly int width;
+    private readonly int height;
+    public static TerrainStrategy terrainStrategy;
     
     public VoxelTerrain(float terrainSurface, int width, int height)
     {
         this.terrainSurface = terrainSurface;
         this.width = width;
         this.height = height;
-        terrainStrategy = new PerlinNoiseStrategy();
-        
     }
 
     public void resetTerrain()
     {
         terrain = new float[width + 1, height + 1, width + 1];
-        terrainStrategy.init();
     }
     
     public void generate () {
@@ -29,7 +27,15 @@ public class VoxelTerrain
             for (int z = 0; z < width + 1; z++) {
                 for (int y = 0; y < height + 1; y++)
                 {
-                    terrain[x, y, z] = terrainStrategy.generate(x, y, z);
+                    if (LevelManager.idx == 0)
+                    {
+                        terrain[x, y, z] = terrainStrategy.generate(x+chunk.chunkPosition.x,y, z+chunk.chunkPosition.z);    
+                    }
+                    else
+                    {
+                        terrain[x, y, z] = terrainStrategy.generate(x, y, z);    
+                    }
+                    
                 }
             }
         }

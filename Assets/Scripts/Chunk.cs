@@ -1,50 +1,50 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Marching : MonoBehaviour {
-
-    public bool smoothTerrain;
-    public bool flatShaded;
-
-    public float terrainSurface;
-
-    public int width
-    {
-        get
-        {
-            return GameManager.Instance.width; 
-        }
-    }
-    public int height
-    {
-        get
-        {
-            return GameManager.Instance.height; 
-        }
-    }
+public class Chunk
+{
     
-    MeshFilter meshFilter;
-    MeshCollider meshCollider;
+    
+    public Vector3Int chunkPosition;
+    private bool flatShaded = true;
+    private bool smoothTerrain = false;
+    
+    int width => GameManager.Instance.width;
+    int height => GameManager.Instance.width;
+    float terrainSurface => GameManager.Instance.terrainSurface;
+    
+    //Obj properties
+    public GameObject chunkObject;
+    private MeshFilter meshFilter;
+    private MeshCollider meshCollider;
+
     public VoxelTerrain terrain;
-    
+
     List<Vector3> vertices = new List<Vector3>();
     List<int> triangles = new List<int>();
 
-    public void Start()
+    
+
+    public Chunk(Vector3Int _chunkPosition)
     {
-        meshFilter = GetComponent<MeshFilter>();
-        meshCollider = GetComponent<MeshCollider>();
+        chunkPosition = _chunkPosition;
         
-        transform.tag = "Terrain";
+        chunkObject = new GameObject { transform = { position = chunkPosition } };
+        meshFilter = chunkObject.AddComponent<MeshFilter>();
+        meshCollider = chunkObject.AddComponent<MeshCollider>();
+        var meshRenderer1 = chunkObject.AddComponent<MeshRenderer>();
+        meshRenderer1.material = Resources.Load<Material>("Matt");
+        
+        
         terrain = new VoxelTerrain(terrainSurface, width, height );
+        terrain.chunk = this;
         terrain.resetTerrain();
         terrain.generate();
         CreateMeshData();
-
     }
-
-    public void CreateMeshData() {
-
+    
+    
+    void CreateMeshData() {
         ClearMeshData();
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -56,6 +56,8 @@ public class Marching : MonoBehaviour {
         Init();
     }
     
+    
+
     void MarchCube (Vector3Int position) {
         
         float[] cube = new float[8];
@@ -105,7 +107,6 @@ public class Marching : MonoBehaviour {
         }
         
     }
-
     int getConfigIdx (float[] cube) {
         int configurationIndex = 0;
         for (int i = 0; i < 8; i++) {
@@ -153,4 +154,25 @@ public class Marching : MonoBehaviour {
         meshCollider.sharedMesh = mesh;
     }
 
+
+
+    public void switchFlatShading()
+    {
+        flatShaded = !flatShaded;
+        CreateMeshData();
+    }
+
+    public void switchSmoothing()
+    {
+        smoothTerrain = !smoothTerrain;
+        CreateMeshData();
+    }
+
+    public void resetTerrain()
+    {
+        terrain.resetTerrain();
+        terrain.generate();
+        CreateMeshData();
+    }
+    
 }

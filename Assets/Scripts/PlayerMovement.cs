@@ -13,6 +13,8 @@ public class PlayerMovement : MonoBehaviour
     private float deformationTime;
     private float radius;
     private Camera _camera;
+    
+    RaycastHit hit;
 
 
     void Start()
@@ -28,23 +30,27 @@ public class PlayerMovement : MonoBehaviour
         RotateCamera();
         HandleScrollInput();
 
-        Marching marchingObject = hitRay();
-        if (marchingObject && Time.time > deformationTime)
+        hitRay();
+        
+    }
+
+    void handleMouseClick()
+    {
+        if (Time.time > deformationTime)
         {
 
             if (Input.GetMouseButton(0))
             {
                 deformationTime = Time.time + 0.1f;
-                marchingObject.PlaceTerrain(hitPos, (int)radius+2);
+                GameManager.Instance.placeTerrain(hitPos); 
             }
             else if (Input.GetMouseButton(1))
             {
                 deformationTime = Time.time + 0.1f;
-                marchingObject.RemoveTerrain(hitPos, (int)radius+2);
+                GameManager.Instance.removeTerrain(hitPos);
             }
         }
     }
-
 
     void RotateCamera()
     {
@@ -80,22 +86,20 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    Marching hitRay()
+    void hitRay()
     {
         Ray ray = _camera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
+        
 
         if (Physics.Raycast(ray, out hit))
         {
             sphereIndicator.SetActive(true);
             hitPos = sphereIndicator.transform.position = hit.point;
-            
-            return hit.collider.GetComponent<Marching>();
+            handleMouseClick();
         }
         else
         {
             sphereIndicator.SetActive(false);
-            return null;
         }
     }
 

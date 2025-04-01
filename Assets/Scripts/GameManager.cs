@@ -4,62 +4,92 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     
-    public Marching marching;
+    
     public static GameManager Instance;
-    public TerrainStrategy[] terrainStrategies;
+    
     
     public int width;
     public int height;
-    private int idx = 0;
+    public float terrainSurface = 0.5f;
+
+    public int dim;
+    public Chunk[,] chunks;
+    
+    
     public void Awake()
     {
         Instance = this;
-
-        terrainStrategies = new TerrainStrategy[]
-        {
-            new SphereStrategy(width, width / 3),
-            new TorusStrategy(width, width/4, 2),
-            new ConeStrategy(width, 45, height),
-            new OctahedronStrategy(width, 10),
-            new PyramidStrategy(width, height/2, height/2),
-            new IcosahedronStrategy(width, width*0.4f),
-            new PerlinNoiseStrategy()
-        };
-
+        LevelManager.setStrategy();
     }
 
-    
-    public void Update()
+    public void Start()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        chunks = new Chunk[dim, dim];
+        for (int i = 0; i < dim; i++)
         {
-            marching.smoothTerrain = !marching.smoothTerrain;
-            marching.CreateMeshData();
-        }
-        
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            marching.flatShaded = !marching.flatShaded;
-            marching.CreateMeshData();
-        }
-        
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            VoxelTerrain terrain = marching.terrain;
-            terrain.resetTerrain();
-            terrain.generate();
-            marching.CreateMeshData();
-        }
-        
-        if (Input.GetKeyDown(KeyCode.Y))
-        {
-            VoxelTerrain terrain = marching.terrain;
-            terrain.terrainStrategy = terrainStrategies[idx];
-            idx = (idx+1) % terrainStrategies.Length;
-            terrain.generate();
-            marching.CreateMeshData();
+            for (int j = 0; j < dim; j++)
+            {
+                
+                Vector3Int chunkPos = new Vector3Int(i, 0, j)*width;
+                
+                chunks[i, j] = new Chunk(chunkPos);
+            }
         }
     }
+
+
+    public void smoothTerrains()
+    {
+        foreach (Chunk chunk in chunks)
+        {
+            chunk.switchSmoothing();
+            
+        }
+    }
+
+    public void flatShadTerrains()
+    {
+        foreach (Chunk chunk in chunks)
+        {
+            chunk.switchFlatShading();
+            
+        }
+    }
+
+    public void resetTerrains()
+    {
+        foreach (Chunk chunk in chunks)
+        {
+            chunk.resetTerrain();
+        }
+    }
+
+    public  void placeTerrain(Vector3 hitPos)
+    {
+        Vector3Int chunkPos = WorldToChunkPos(hitPos); 
+        Chunk chunk = chunks[(int)chunkPos.x, (int)chunkPos.z];
+        chunk.PlaceTerrain(WorldToTerrainPos(hitPos), 3);
+    }
     
-    
+    public  void removeTerrain(Vector3 hitPos)
+    {
+        Vector3Int chunkPos = WorldToChunkPos(hitPos); 
+        Chunk chunk = chunks[(int)chunkPos.x, (int)chunkPos.z];
+        chunk.RemoveTerrain(WorldToTerrainPos(hitPos), 3);
+    }
+
+    Vector3Int WorldToChunkPos(Vector3 pos)
+    {
+        pos = pos / width;
+        return new Vector3Int((int)pos.x, 0, (int)pos.z);
+    }
+
+    Vector3Int WorldToTerrainPos(Vector3 pos)
+    {
+        Vector3Int posInt = new Vector3Int((int)pos.x, (int)pos.y, (int)pos.z);
+        Vector3Int chunkPos = WorldToChunkPos(posInt);
+        return posInt - chunkPos* width;
+
+
+    }
 }
