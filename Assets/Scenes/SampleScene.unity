@@ -1396,10 +1396,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 592ce9780fd7e474bb4708552be1f0ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  width: 16
-  height: 16
+  width: 32
+  height: 20
   terrainSurface: 0.5
-  dim: 10
+  dim: 5
 --- !u!4 &1372018493
 Transform:
   m_ObjectHideFlags: 0

@@ -35,6 +35,8 @@ public class GameManager : MonoBehaviour
                 chunks[i, j] = new Chunk(chunkPos);
             }
         }
+        
+        Init();
     }
 
 
@@ -89,7 +91,14 @@ public class GameManager : MonoBehaviour
         Vector3Int posInt = new Vector3Int((int)pos.x, (int)pos.y, (int)pos.z);
         Vector3Int chunkPos = WorldToChunkPos(posInt);
         return posInt - chunkPos* width;
+    }
 
-
+    void Init()
+    {
+        foreach (Chunk chunk in chunks)
+        {
+            chunk.CreateMeshData();    
+        }
+        
     }
 }

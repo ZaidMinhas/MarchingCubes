@@ -11,6 +11,7 @@ public class Chunk
     
     int width => GameManager.Instance.width;
     int height => GameManager.Instance.width;
+    int dim => GameManager.Instance.dim;
     float terrainSurface => GameManager.Instance.terrainSurface;
     
     //Obj properties
@@ -36,15 +37,17 @@ public class Chunk
         meshRenderer1.material = Resources.Load<Material>("Matt");
         
         
-        terrain = new VoxelTerrain(terrainSurface, width, height );
-        terrain.chunk = this;
+        terrain = new VoxelTerrain(terrainSurface, width, height )
+        {
+            chunk = this
+        };
         terrain.resetTerrain();
         terrain.generate();
-        CreateMeshData();
+        
     }
-    
-    
-    void CreateMeshData() {
+
+
+    public void CreateMeshData() {
         ClearMeshData();
         for (int x = 0; x < width; x++) {
             for (int y = 0; y < height; y++) {
@@ -53,16 +56,62 @@ public class Chunk
                 }
             }
         }
+
+        if (chunkPosition.z < width )
+        {
+            int z = width;
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    MarchCube(new Vector3Int(x, y, z));
+                }
+            }    
+        }
+        
+        if (chunkPosition.x < width*dim )
+        {
+            int x = width;
+            for (int z = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    MarchCube(new Vector3Int(x, y, z));
+                }
+            }    
+        }
+        Debug.Log(chunkPosition);
+
         Init();
     }
     
     
-
     void MarchCube (Vector3Int position) {
         
         float[] cube = new float[8];
-        for (int i = 0; i < 8; i++) {
-            cube[i] = terrain.getValue(position + CubesData.CornerTable[i]);
+        for (int i = 0; i < 8; i++)
+        {
+            
+            Vector3Int cornerPos = position + CubesData.CornerTable[i];
+            if (cornerPos.z > width)
+            {
+                cornerPos = new Vector3Int(cornerPos.x, cornerPos.y, 0);
+                
+                VoxelTerrain nextTerrain = GameManager.Instance.chunks[chunkPosition.x/8, (chunkPosition.z)/8+1].terrain;
+                cube[i] = nextTerrain.getValue(cornerPos);
+            }
+            else if (cornerPos.x > width)
+            {
+                cornerPos = new Vector3Int(0, cornerPos.y, cornerPos.z);
+                
+                VoxelTerrain nextTerrain = GameManager.Instance.chunks[(chunkPosition.x)/8 + 1, (chunkPosition.z)/8].terrain;
+                cube[i] = nextTerrain.getValue(cornerPos);
+            }
+            else
+            {
+                cube[i] = terrain.getValue(cornerPos);    
+            }
+            
         }
         int configIndex = getConfigIdx(cube);
         if (configIndex is 0 or 255)
@@ -146,9 +195,11 @@ public class Chunk
     }
 
     void Init () {
-        Mesh mesh = new Mesh();
-        mesh.vertices = vertices.ToArray();
-        mesh.triangles = triangles.ToArray();
+        Mesh mesh = new Mesh
+        {
+            vertices = vertices.ToArray(),
+            triangles = triangles.ToArray()
+        };
         mesh.RecalculateNormals();
         meshFilter.mesh = mesh;
         meshCollider.sharedMesh = mesh;
