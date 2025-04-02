@@ -10,7 +10,7 @@ public class Chunk
     private bool smoothTerrain = false;
     
     int width => GameManager.Instance.width;
-    int height => GameManager.Instance.width;
+    int height => GameManager.Instance.height;
     int dim => GameManager.Instance.dim;
     float terrainSurface => GameManager.Instance.terrainSurface;
     
