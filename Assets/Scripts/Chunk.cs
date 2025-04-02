@@ -57,7 +57,7 @@ public class Chunk
             }
         }
 
-        if (chunkPosition.z < width )
+        if (chunkPosition.z < dim )
         {
             int z = width;
             for (int x = 0; x < width; x++)
@@ -69,7 +69,7 @@ public class Chunk
             }    
         }
         
-        if (chunkPosition.x < width*dim )
+        if (chunkPosition.x < dim )
         {
             int x = width;
             for (int z = 0; x < width; x++)
@@ -80,7 +80,7 @@ public class Chunk
                 }
             }    
         }
-        Debug.Log(chunkPosition);
+        
 
         Init();
     }
@@ -96,15 +96,16 @@ public class Chunk
             if (cornerPos.z > width)
             {
                 cornerPos = new Vector3Int(cornerPos.x, cornerPos.y, 0);
+                Vector2Int chunkIndex = new Vector2Int(chunkPosition.x / width, (chunkPosition.z) / width + 1);
                 
-                VoxelTerrain nextTerrain = GameManager.Instance.chunks[chunkPosition.x/8, (chunkPosition.z)/8+1].terrain;
+                VoxelTerrain nextTerrain = GameManager.Instance.chunks[chunkIndex.x, chunkIndex.y].terrain;
                 cube[i] = nextTerrain.getValue(cornerPos);
             }
             else if (cornerPos.x > width)
             {
                 cornerPos = new Vector3Int(0, cornerPos.y, cornerPos.z);
                 
-                VoxelTerrain nextTerrain = GameManager.Instance.chunks[(chunkPosition.x)/8 + 1, (chunkPosition.z)/8].terrain;
+                VoxelTerrain nextTerrain = GameManager.Instance.chunks[(chunkPosition.x)/width + 1, (chunkPosition.z)/width].terrain;
                 cube[i] = nextTerrain.getValue(cornerPos);
             }
             else
