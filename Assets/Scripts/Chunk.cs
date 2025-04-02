@@ -11,7 +11,7 @@ public class Chunk
     
     int width => GameManager.Instance.width;
     int height => GameManager.Instance.height;
-    int dim => GameManager.Instance.dim;
+    int dim => GameManager.dim;
     float terrainSurface => GameManager.Instance.terrainSurface;
     
     //Obj properties
@@ -57,7 +57,7 @@ public class Chunk
             }
         }
 
-        if (chunkPosition.z < dim )
+        if (chunkPosition.z < dim  && dim > 1)
         {
             int z = width;
             for (int x = 0; x < width; x++)
@@ -69,7 +69,7 @@ public class Chunk
             }    
         }
         
-        if (chunkPosition.x < dim )
+        if (chunkPosition.x < dim && dim > 1 )
         {
             int x = width;
             for (int z = 0; x < width; x++)
@@ -80,8 +80,6 @@ public class Chunk
                 }
             }    
         }
-        
-
         Init();
     }
     
@@ -93,7 +91,7 @@ public class Chunk
         {
             
             Vector3Int cornerPos = position + CubesData.CornerTable[i];
-            if (cornerPos.z > width)
+            if (cornerPos.z > width && dim > 1)
             {
                 cornerPos = new Vector3Int(cornerPos.x, cornerPos.y, 0);
                 Vector2Int chunkIndex = new Vector2Int(chunkPosition.x / width, (chunkPosition.z) / width + 1);
@@ -101,7 +99,7 @@ public class Chunk
                 VoxelTerrain nextTerrain = GameManager.Instance.chunks[chunkIndex.x, chunkIndex.y].terrain;
                 cube[i] = nextTerrain.getValue(cornerPos);
             }
-            else if (cornerPos.x > width)
+            else if (cornerPos.x > width && dim > 1)
             {
                 cornerPos = new Vector3Int(0, cornerPos.y, cornerPos.z);
                 
@@ -188,7 +186,7 @@ public class Chunk
         return vertices.Count - 1;
     }
 
-    void ClearMeshData () {
+    public void ClearMeshData () {
 
         vertices.Clear();
         triangles.Clear();

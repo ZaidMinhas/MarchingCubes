@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     public int height;
     public float terrainSurface = 0.5f;
 
-    public int dim;
+    public static int dim => CubesData.dim;
     public Chunk[,] chunks;
     
     
@@ -63,21 +63,22 @@ public class GameManager : MonoBehaviour
         foreach (Chunk chunk in chunks)
         {
             chunk.resetTerrain();
+            chunk.ClearMeshData();
         }
     }
 
-    public  void placeTerrain(Vector3 hitPos)
+    public  void placeTerrain(Vector3 hitPos, int radius)
     {
         Vector3Int chunkPos = WorldToChunkPos(hitPos); 
         Chunk chunk = chunks[(int)chunkPos.x, (int)chunkPos.z];
-        chunk.PlaceTerrain(WorldToTerrainPos(hitPos), 3);
+        chunk.PlaceTerrain(WorldToTerrainPos(hitPos), radius+2);
     }
     
-    public  void removeTerrain(Vector3 hitPos)
+    public  void removeTerrain(Vector3 hitPos, int radius)
     {
         Vector3Int chunkPos = WorldToChunkPos(hitPos); 
         Chunk chunk = chunks[(int)chunkPos.x, (int)chunkPos.z];
-        chunk.RemoveTerrain(WorldToTerrainPos(hitPos), 3);
+        chunk.RemoveTerrain(WorldToTerrainPos(hitPos), radius+2);
     }
 
     Vector3Int WorldToChunkPos(Vector3 pos)

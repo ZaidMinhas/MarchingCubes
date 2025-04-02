@@ -2,6 +2,10 @@ using UnityEngine;
 
 public static class CubesData
 {
+	public static Quaternion rotation;
+	public static Vector3 position;
+	public static Quaternion cameraRotation;
+	public static int dim = 1;
     public static Vector3Int[] CornerTable = new Vector3Int[8] {
 
         new Vector3Int(0, 0, 0),

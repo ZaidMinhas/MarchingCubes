@@ -264,34 +264,3 @@ public class IcosahedronStrategy : TerrainStrategy
     {
     }
 }
-public class HeartStrategy : TerrainStrategy
-{
-    private float size;
-    private Vector3 center;
-
-    public HeartStrategy(float width = 1)
-    {
-        size = width / 2; // Scale appropriately
-        center = new Vector3(width / 2, width / 2, width / 2);
-    }
-
-    public float generate(float x, float y, float z)
-    {
-        // Normalize coordinates relative to the heart's center
-        float nx = (x - center.x) / size;
-        float ny = (y - center.y) / size;
-        float nz = (z - center.z) / size;
-
-        // Heart implicit equation
-        float heartEq = Mathf.Pow(nx * nx + 9f / 4f * ny * ny + nz * nz - 1, 3) 
-                        - nx * nx * Mathf.Pow(nz, 3) 
-                        - 9f / 80f * ny * ny * Mathf.Pow(nz, 3);
-
-        return heartEq;
-    }
-
-    public void init()
-    {
-        
-    }
-}

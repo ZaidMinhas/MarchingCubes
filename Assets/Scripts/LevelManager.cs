@@ -7,8 +7,7 @@ public static class LevelManager
     public  static int idx;
     private static int width => GameManager.Instance.width;
     private static int height => GameManager.Instance.height;
-
-
+    
     private static readonly TerrainStrategy[] terrainStrategies =  {
         new PerlinNoiseStrategy(),
         new SphereStrategy(width, width / 3),
@@ -17,7 +16,6 @@ public static class LevelManager
         new OctahedronStrategy(width, 10),
         new PyramidStrategy(width, height/2, height/2),
         new IcosahedronStrategy(width, width*0.4f),
-        
     };
 
     private static TerrainStrategy getStrategy()

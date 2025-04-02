@@ -19,7 +19,11 @@ public class PlayerMovement : MonoBehaviour
 
     void Start()
     {
+        transform.position = CubesData.position;
+        transform.rotation = CubesData.rotation;
+        
         _camera = Camera.main;
+        _camera.transform.rotation = CubesData.cameraRotation;
         Cursor.lockState = CursorLockMode.Locked;
         radius = sphereIndicator.transform.localScale.x;
     }
@@ -42,12 +46,12 @@ public class PlayerMovement : MonoBehaviour
             if (Input.GetMouseButton(0))
             {
                 deformationTime = Time.time + 0.1f;
-                GameManager.Instance.placeTerrain(hitPos); 
+                GameManager.Instance.placeTerrain(hitPos, (int)radius); 
             }
             else if (Input.GetMouseButton(1))
             {
                 deformationTime = Time.time + 0.1f;
-                GameManager.Instance.removeTerrain(hitPos);
+                GameManager.Instance.removeTerrain(hitPos, (int)radius);
             }
         }
     }

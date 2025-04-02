@@ -1397,9 +1397,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   width: 32
-  height: 20
+  height: 32
   terrainSurface: 0.5
-  dim: 5
 --- !u!4 &1372018493
 Transform:
   m_ObjectHideFlags: 0
@@ -1427,6 +1426,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c70b8776884f0d42a0f69547811119a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 1642340122}
 --- !u!1 &1493749549
 GameObject:
   m_ObjectHideFlags: 0
